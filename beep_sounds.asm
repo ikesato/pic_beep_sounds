@@ -99,6 +99,38 @@ main_loop
 		
 		bsf			LED_P		;音といっしょにLEDも
 
+
+		movlw		d'3'
+		call		play_2do
+		movlw		d'3'
+		call		play_2re
+		movlw		d'14'
+		call		play_2mi
+		movlw		d'3'
+		call		play_2re
+		movlw		d'5'
+		call		play_2do
+		call		DLY_100
+		call		DLY_100
+		movlw		d'3'
+		call		play_2do
+		movlw		d'3'
+		call		play_2re
+		movlw		d'3'
+		call		play_2mi
+		movlw		d'3'
+		call		play_2re
+		movlw		d'3'
+		call		play_2do
+		movlw		d'17'
+		call		play_2re
+		call		DLY_100
+		call		DLY_100
+		call		DLY_100
+
+	goto		main_loop
+
+		
 		movlw		d'5'		; 0.5秒間
 		call		play_0do
 		movlw		d'5'		; 0.5秒間
