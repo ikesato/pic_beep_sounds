@@ -22,18 +22,18 @@ CNT1			EQU		0x22		;ディレイルーチン用
 
 ;;; ディレイルーチン用
 ;;; 全体の処理時間は以下で計算
-;;; CNT_N_100ms * (CNT_100ms * 2 * (255*CNT_255 + CNT_M))
+;;; CNT_N_100ms * (CNT_100ms * 2 * (256*CNT_256 + CNT_M))
 ;;;                                ^^^^^^^^^^^^^^^^^^^^^ 周波数/2
 ;;;                           ^^^                        周波数 ON/OFF で２回分
 ;;;               ^^^^^^^^^^                             100ms用カウンタ
 ;;; ^^^^^^^^^^^                                          100ms*N回
 CNT_N_100ms		EQU		0x23		;ディレイルーチン用
 CNT_100ms		EQU		0x24		;ディレイルーチン用
-CNT_255			EQU		0x25		;ディレイルーチン用 255*N+M のN
-CNT_M			EQU		0x26		;ディレイルーチン用 255*N+M のM
+CNT_256			EQU		0x25		;ディレイルーチン用 256*N+M のN
+CNT_M			EQU		0x26		;ディレイルーチン用 256*N+M のM
 CNT_N			EQU		0x27		;ディレイルーチン用 Ncycle 待ち用
 WORK_CNT_100ms	EQU		0x28		;ディレイルーチン用
-WORK_CNT_255	EQU		0x29		;ディレイルーチン用
+WORK_CNT_256	EQU		0x29		;ディレイルーチン用
 WORK_CNT_M		EQU		0x2a		;ディレイルーチン用
 WORK_CNT_N		EQU		0x2b		;ディレイルーチン用
 TMP_TMO			EQU		0x2c		;アラームタイムアウト用
@@ -99,20 +99,20 @@ main_loop
 		
 		bsf			LED_P		;音といっしょにLEDも
 
-;		movlw		d'5'		; 0.5秒間
-;		call		play_0do
-;		movlw		d'5'		; 0.5秒間
-;		call		play_0re
-;		movlw		d'5'		; 0.5秒間
-;		call		play_0mi
-;		movlw		d'5'		; 0.5秒間
-;		call		play_0fa
-;		movlw		d'5'		; 0.5秒間
-;		call		play_0so
-;		movlw		d'5'		; 0.5秒間
-;		call		play_0ra
-;		movlw		d'5'		; 0.5秒間
-;		call		play_0si
+		movlw		d'5'		; 0.5秒間
+		call		play_0do
+		movlw		d'5'		; 0.5秒間
+		call		play_0re
+		movlw		d'5'		; 0.5秒間
+		call		play_0mi
+		movlw		d'5'		; 0.5秒間
+		call		play_0fa
+		movlw		d'5'		; 0.5秒間
+		call		play_0so
+		movlw		d'5'		; 0.5秒間
+		call		play_0ra
+		movlw		d'5'		; 0.5秒間
+		call		play_0si
 		movlw		d'5'		; 0.5秒間
 		call		play_1do
 		movlw		d'5'		; 0.5秒間
@@ -124,25 +124,25 @@ main_loop
 		movlw		d'5'		; 0.5秒間
 		call		play_1so
 		movlw		d'5'		; 0.5秒間
-		call		play_1ra	;変
+		call		play_1ra
 		movlw		d'5'		; 0.5秒間
-		call		play_1si	;変
+		call		play_1si
 		movlw		d'5'		; 0.5秒間
-;		call		play_2do
-;		movlw		d'5'		; 0.5秒間
-;		call		play_2re
-;		movlw		d'5'		; 0.5秒間
-;		call		play_2mi
-;		movlw		d'5'		; 0.5秒間
-;		call		play_2fa
-;		movlw		d'5'		; 0.5秒間
-;		call		play_2so
-;		movlw		d'5'		; 0.5秒間
-;		call		play_2ra
-;		movlw		d'5'		; 0.5秒間
-;		call		play_2si
-;		movlw		d'5'		; 0.5秒間
-;		call		play_3do
+		call		play_2do
+		movlw		d'5'		; 0.5秒間
+		call		play_2re
+		movlw		d'5'		; 0.5秒間
+		call		play_2mi
+		movlw		d'5'		; 0.5秒間
+		call		play_2fa
+		movlw		d'5'		; 0.5秒間
+		call		play_2so
+		movlw		d'5'		; 0.5秒間
+		call		play_2ra
+		movlw		d'5'		; 0.5秒間
+		call		play_2si
+		movlw		d'5'		; 0.5秒間
+		call		play_3do
 	
 		call		DLY_250
 		call		DLY_250
@@ -284,7 +284,7 @@ blink_led
 ;;; 音を鳴らす
 ;;; @param w 長さ (100ms * N) のNを指定
 ;;; @param CNT_100ms 100ms 用カウンタ
-;;; @param CNT_255 長さ 255サイクル用カウンタ
+;;; @param CNT_256 長さ 256サイクル用カウンタ
 ;;; @param CNT_M 長さ Nサイクル用カウンタ
 
 play
@@ -303,24 +303,23 @@ play_100ms_loop
 		goto		play_100ms_loop
 		goto		play
 
-;;; 約255*N+M サイクル待つ
+;;; 約256*N+M サイクル待つ
 ;;; 
-;;; WORK_CNT_255, WORK_CNT_M レジスタを使用
-;;; @param CNT_255 255*N+M の N を指定
-;;; @param CNT_M 255*N+M の M を指定
+;;; WORK_CNT_256, WORK_CNT_M レジスタを使用
+;;; @param CNT_256 256*N+M の N を指定
+;;; @param CNT_M 256*N+M の M を指定
 delay_NMcycle
-		movf		CNT_255,w
-		movwf		WORK_CNT_255
+		movf		CNT_256,w
+		movwf		WORK_CNT_256
+		incf		WORK_CNT_256
 delay_NMcycle_loop
-		decfsz		WORK_CNT_255,f
-		goto		delay_NMcycle_255cycle
+		decfsz		WORK_CNT_256,f
+		goto		delay_NMcycle_256cycle
 		movf		CNT_M,w
 		movwf		CNT_N
 		goto		delay_Ncycle
-delay_NMcycle_255cycle
-		movlw		0xff
-		movwf		CNT_N
-		call		delay_Ncycle
+delay_NMcycle_256cycle
+		call		delay_256cycle
 		goto		delay_NMcycle_loop
 
 ;;; Nサイクル delay
@@ -356,18 +355,18 @@ delay_256cycle
 
 ;;; 周波数一覧表
 ;;; 		kHz		us			 	us/2				100msでNループ
-;;; ド		261.626	3822.25008218	1911	7*255+126	26.164311879
-;;; ド#		277.183	3607.72486047	1804	7*255+19
-;;; レ		293.665	3405.24066538	1703	6*255+173	27.723870252
-;;; レ#		311.127	3214.12156451	1607	6*255+77
-;;; ミ		329.628	3033.7136599	1517	5*255+242	32.959789057
-;;; ファ	349.228	2863.45882919	1432	5*255+157	34.928396787
-;;; ファ#	369.994	2702.74653102	1352	5*255+77
-;;; ソ		391.995	2551.0529471	1276	5*255+1		39.200313603
-;;; ソ#		415.305	2407.86891562	1204	4*255+184
-;;; ラ		440.000	2272.72727273	1137	4*255+117	43.994720634
-;;; ラ#		466.164	2145.16779502	1073	4*255+53
-;;; シ		493.883	2024.77104901	1013	3*255+248	49.382716049
+;;; ド		261.626	3822.25008218	1911	7*256+126	26.164311879
+;;; ド#		277.183	3607.72486047	1804	7*256+19
+;;; レ		293.665	3405.24066538	1703	6*256+173	27.723870252
+;;; レ#		311.127	3214.12156451	1607	6*256+77
+;;; ミ		329.628	3033.7136599	1517	5*256+242	32.959789057
+;;; ファ	349.228	2863.45882919	1432	5*256+157	34.928396787
+;;; ファ#	369.994	2702.74653102	1352	5*256+77
+;;; ソ		391.995	2561.0529471	1276	5*256+1		39.200313603
+;;; ソ#		415.305	2407.86891562	1204	4*256+184
+;;; ラ		440.000	2272.72727273	1137	4*256+117	43.994720634
+;;; ラ#		466.164	2145.16779502	1073	4*256+53
+;;; シ		493.883	2024.77104901	1013	3*256+248	49.382716049
 ;;; 
 ;;; 4mHz で 1cycle は 1us
 
@@ -380,8 +379,8 @@ play_0do
 		movlw		d'13'
 		movwf		CNT_100ms
 		movlw		d'14'
-		movwf		CNT_255
-		movlw		d'252'
+		movwf		CNT_256
+		movlw		d'238'
 		movwf		CNT_M
 		goto		play
 play_0re
@@ -389,8 +388,8 @@ play_0re
 		movlw		d'15'
 		movwf		CNT_100ms
 		movlw		d'13'
-		movwf		CNT_255
-		movlw		d'90'
+		movwf		CNT_256
+		movlw		d'77'
 		movwf		CNT_M
 		goto		play
 play_0mi
@@ -398,8 +397,8 @@ play_0mi
 		movlw		d'16'
 		movwf		CNT_100ms
 		movlw		d'11'
-		movwf		CNT_255
-		movlw		d'229'
+		movwf		CNT_256
+		movlw		d'218'
 		movwf		CNT_M
 		goto		play
 play_0fa
@@ -407,17 +406,17 @@ play_0fa
 		movlw		d'17'
 		movwf		CNT_100ms
 		movlw		d'11'
-		movwf		CNT_255
-		movlw		d'58'
+		movwf		CNT_256
+		movlw		d'47'
 		movwf		CNT_M
 		goto		play
 play_0so
 		movwf		CNT_N_100ms
 		movlw		d'20'
 		movwf		CNT_100ms
-		movlw		d'10'
-		movwf		CNT_255
-		movlw		d'1'
+		movlw		d'9'
+		movwf		CNT_256
+		movlw		d'247'
 		movwf		CNT_M
 		goto		play
 play_0ra
@@ -425,8 +424,8 @@ play_0ra
 		movlw		d'22'
 		movwf		CNT_100ms
 		movlw		d'8'
-		movwf		CNT_255
-		movlw		d'233'
+		movwf		CNT_256
+		movlw		d'225'
 		movwf		CNT_M
 		goto		play
 play_0si
@@ -434,8 +433,8 @@ play_0si
 		movlw		d'25'
 		movwf		CNT_100ms
 		movlw		d'7'
-		movwf		CNT_255
-		movlw		d'240'
+		movwf		CNT_256
+		movlw		d'233'
 		movwf		CNT_M
 		goto		play
 play_1do
@@ -443,18 +442,18 @@ play_1do
 		movlw		d'26'
 		movwf		CNT_100ms
 		movlw		d'7'
-		movwf		CNT_255
-		movlw		d'126'
+		movwf		CNT_256
+		movlw		d'119'
 		movwf		CNT_M
 		call		play
         return
 play_1re
 		movwf		CNT_N_100ms
-		movlw		d'28'
+		movlw		d'29'
 		movwf		CNT_100ms
 		movlw		d'6'
-		movwf		CNT_255
-		movlw		d'173'
+		movwf		CNT_256
+		movlw		d'117'
 		movwf		CNT_M
 		call		play
         return
@@ -463,8 +462,8 @@ play_1mi
 		movlw		d'33'
 		movwf		CNT_100ms
 		movlw		d'5'
-		movwf		CNT_255
-		movlw		d'242'
+		movwf		CNT_256
+		movlw		d'237'
 		movwf		CNT_M
 		goto		play
 play_1fa
@@ -472,48 +471,44 @@ play_1fa
 		movlw		d'35'
 		movwf		CNT_100ms
 		movlw		d'5'
-		movwf		CNT_255
-		movlw		d'157'
+		movwf		CNT_256
+		movlw		d'152'
 		movwf		CNT_M
 		goto		play
 play_1so
 		movwf		CNT_N_100ms
 		movlw		d'39'
 		movwf		CNT_100ms
-		movlw		d'5'
-		movwf		CNT_255
-		movlw		d'1'		; b'00000001'
+		movlw		d'4'
+		movwf		CNT_256
+		movlw		d'252'
 		movwf		CNT_M
 		goto		play
-play_1ra						;なんか変
+play_1ra
 		movwf		CNT_N_100ms
 		movlw		d'44'
 		movwf		CNT_100ms
 		movlw		d'4'
-;		movlw		d'0'
-		movwf		CNT_255
-		movlw		d'116'		; b'01110100'
-;		movlw		d'126'		; b'01110100'
+		movwf		CNT_256
+		movlw		d'112'
 		movwf		CNT_M
-		call		play
-        return
-play_1si						;なんか変
+		goto		play
+play_1si
 		movwf		CNT_N_100ms
 		movlw		d'49'
 		movwf		CNT_100ms
 		movlw		d'3'
-		movwf		CNT_255
-		movlw		d'247'		; b'11110111'
+		movwf		CNT_256
+		movlw		d'244'
 		movwf		CNT_M
 		goto		play
-
 play_2do
 		movwf		CNT_N_100ms
 		movlw		d'52'
 		movwf		CNT_100ms
 		movlw		d'3'
-		movwf		CNT_255
-		movlw		d'191'		; b'10111111'
+		movwf		CNT_256
+		movlw		d'188'
 		movwf		CNT_M
 		goto		play
 play_2re
@@ -521,8 +516,8 @@ play_2re
 		movlw		d'59'
 		movwf		CNT_100ms
 		movlw		d'3'
-		movwf		CNT_255
-		movlw		d'86'
+		movwf		CNT_256
+		movlw		d'83'
 		movwf		CNT_M
 		goto		play
 play_2mi
@@ -530,8 +525,8 @@ play_2mi
 		movlw		d'66'
 		movwf		CNT_100ms
 		movlw		d'2'
-		movwf		CNT_255
-		movlw		d'248'
+		movwf		CNT_256
+		movlw		d'246'
 		movwf		CNT_M
 		goto		play
 play_2fa
@@ -539,8 +534,8 @@ play_2fa
 		movlw		d'70'
 		movwf		CNT_100ms
 		movlw		d'2'
-		movwf		CNT_255
-		movlw		d'206'
+		movwf		CNT_256
+		movlw		d'204'
 		movwf		CNT_M
 		goto		play
 play_2so
@@ -548,8 +543,8 @@ play_2so
 		movlw		d'78'
 		movwf		CNT_100ms
 		movlw		d'2'
-		movwf		CNT_255
-		movlw		d'128'
+		movwf		CNT_256
+		movlw		d'126'
 		movwf		CNT_M
 		goto		play
 play_2ra
@@ -557,8 +552,8 @@ play_2ra
 		movlw		d'88'
 		movwf		CNT_100ms
 		movlw		d'2'
-		movwf		CNT_255
-		movlw		d'58'
+		movwf		CNT_256
+		movlw		d'56'
 		movwf		CNT_M
 		goto		play
 play_2si
@@ -566,8 +561,8 @@ play_2si
 		movlw		d'99'
 		movwf		CNT_100ms
 		movlw		d'1'
-		movwf		CNT_255
-		movlw		d'251'
+		movwf		CNT_256
+		movlw		d'250'
 		movwf		CNT_M
 		goto		play
 play_3do
@@ -575,8 +570,8 @@ play_3do
 		movlw		d'105'
 		movwf		CNT_100ms
 		movlw		d'1'
-		movwf		CNT_255
-		movlw		d'223'
+		movwf		CNT_256
+		movlw		d'222'
 		movwf		CNT_M
 		goto		play
 
@@ -600,10 +595,10 @@ DLY_250	; 250mS
 		movwf		CNT1
 DLP1	; 1mS
 		movlw		d'250'
-		movwf		CNT_255
+		movwf		CNT_256
 DLP2
 		nop
-		decfsz		CNT_255,f
+		decfsz		CNT_256,f
 		goto		DLP2
 		decfsz		CNT1,f
 		goto		DLP1
@@ -614,11 +609,11 @@ DLY_100	; 100mS
 		movwf		CNT1
 DLP1_1	; 1mS
 		movlw		d'250'
-		movwf		CNT_255
+		movwf		CNT_256
 DLP1_2
 		nop
 		nop
-		decfsz		CNT_255,f
+		decfsz		CNT_256,f
 		goto		DLP1_2
 		decfsz		CNT1,f
 		goto		DLP1_1
@@ -629,11 +624,11 @@ DLY_50	; 50mS
 		movwf		CNT1
 DLP5_1	; 1mS
 		movlw		d'250'
-		movwf		CNT_255
+		movwf		CNT_256
 DLP5_2
 		nop
 		nop
-		decfsz		CNT_255,f
+		decfsz		CNT_256,f
 		goto		DLP5_2
 		decfsz		CNT1,f
 		goto		DLP5_1
@@ -641,12 +636,12 @@ DLP5_2
 
 DLY_05m	; ビープ音の周波数生成用
 		movlw		d'60'	;これを減らすと高音、増やすと低音
-		movwf		CNT_255	;ただし鳴動時間に影響する
+		movwf		CNT_256	;ただし鳴動時間に影響する
 DLY05_1
 		nop
 		nop
 		nop
-		decfsz		CNT_255,f
+		decfsz		CNT_256,f
 		goto		DLY05_1
 		return	
 
