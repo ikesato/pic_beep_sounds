@@ -1,7 +1,7 @@
-pic_led_helloworld
+pic_beep_sounds
 ==================
-- ラーメンタイマー
- 書籍「やさしい PIC マイコン プログラミング＆電子工作 第二版」
+- 圧電スピーカを使ってドレミを実現
+- チャルメラを鳴らしてみた
 
 
 他
@@ -20,6 +20,6 @@ $ pk2cmd -PPIC12F683 -M -F dist/default/production/pic_beep_sounds.production.he
 
 pickit2 で電源供給方法
 ----------------------
-$ pk2cmd -PPIC12F683 -T         # 5V 供給
-$ pk2cmd -PPIC12F683 -T -A 3.3  # 3.3V 供給
-$ pk2cmd -PPIC12F683 -W         # pickit2 からの電源供給停止
+$ pk2cmd -PPIC12F683 -T         # 5V 供給  
+$ pk2cmd -PPIC12F683 -T -A 3.3  # 3.3V 供給  
+$ pk2cmd -PPIC12F683 -W         # pickit2 からの電源供給停止  
