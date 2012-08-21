@@ -4,8 +4,12 @@
 	errorlevel  -302
 
 ;	__CONFIG   _CP_OFF & _CPD_OFF & _BODEN_OFF & _MCLRE_OFF & _WDT_OFF & _PWRTE_ON & _INTRC_OSC_NOCLKOUT
-	__CONFIG   _CP_OFF & _CPD_OFF & _BOREN_OFF & _MCLRE_OFF & _WDT_OFF & _PWRTE_ON & _INTRC_OSC_NOCLKOUT
+;	__CONFIG   _CP_OFF & _CPD_OFF & _BOREN_OFF & _MCLRE_OFF & _WDT_OFF & _PWRTE_ON & _INTRC_OSC_NOCLKOUT
 
+	__CONFIG   _CP_OFF & _CPD_OFF & _BOREN_OFF & _MCLRE_OFF & _WDT_OFF & _IESO_OFF & _PWRTE_ON & _INTRC_OSC_NOCLKOUT
+
+
+		
 #define		TCNT50MS	d'61'	; 割り込みによる50mS計測のための定数
 #define		TCNT1S		d'20'	; 1S = 50ms X 20
 #define		TIME_GO		d'181'	; 3分(引いてゼロになった瞬間に音が鳴るので+1しておく)
@@ -88,13 +92,29 @@ main
 		bsf			TRISIO,5	;GP5だけ入力に設定
 		clrf		IOC			;I/O状態変化チェック解除
 
-;		movlw		b'10000111'	;プルアップ無し、エッジ割り込み無し、タイマー0は内部クロック
-;		movwf		OPTION_REG	;プリスケーラー1/256に設定
+		movlw		b'10000111'	;プルアップ無し、エッジ割り込み無し、タイマー0は内部クロック
+		movwf		OPTION_REG	;プリスケーラー1/256に設定
+
+		clrf 		ANSEL 		;digital I/O
 
 		bcf			STATUS,RP0	; Bnak=0
 
 		clrf		GPIO
+
+		bsf			LED_P		;音といっしょにLEDも
+		bsf			GPIO,4
+		bsf			GPIO,0
 main_loop
+;		movlw		d'3'
+;		call		play_2do
+;		bsf			GPIO,4
+;		bsf			BEEP_P
+;		bsf			LED_P		;音といっしょにLEDも
+;		call		DLY_05m
+;		bcf			BEEP_P
+;		call		DLY_05m
+
+;		goto		main_loop
 ;; 		goto	blink_led
 		
 		bsf			LED_P		;音といっしょにLEDも
